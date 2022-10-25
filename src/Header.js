@@ -1,6 +1,5 @@
 import { auth } from "./Firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth"
-
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth"
 
 const Header = () => {
 
@@ -41,11 +40,20 @@ const Header = () => {
         });
     }
 
+    onAuthStateChanged(auth, (val) => {
+        if(val){
+            usuario = val;
+            alert("Bem-vindo de volta "+ usuario.email);
+            document.querySelector(".container-login").style.display = "block";
+            document.querySelector(".login").style.display = "none";
+        }
+    })
+
     return (
         <div className="header">
             <div className="login">
                 <h2>Faça o Login no App</h2>
-                <form onSubmit={(e) => criarConta(e)}>
+                <form className="login-form" onSubmit={(e) => criarConta(e)}>
                     <input type="email" name="email" placeholder="Email" />
                     <input type="password" name="password" placeholder="Senha" />
                     <button type="submit" name="entrar">Entrar</button>
@@ -55,6 +63,10 @@ const Header = () => {
             <div className="container-login">
                 <h2>Olá, você está logado</h2>
                 <button onClick={(e) => sair(e)}>sair</button>
+                <form className="form-cadatro-tarefa">
+                    <textarea name="tarefa"></textarea>
+                    <input type="datetime-local" name="datetime"/>
+                </form>
 
             </div>
 
