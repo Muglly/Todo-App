@@ -1,9 +1,13 @@
 import { auth, db } from "./Firebase";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth"
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, onSnapshot, where } from "firebase/firestore";
 
 const Header = () => {
 
+    let usuario = "";
+    const docCol = collection(db, "tarefa");
+
+    // Sistema de login
     const criarConta = (e) => {
         e.preventDefault();
 
@@ -26,9 +30,9 @@ const Header = () => {
 
     }
 
+    // Sistema de logaut
     const sair = (e) => {
         e.preventDefault()
-
 
         signOut(auth).then(() => {
             alert("Deslogado");
@@ -39,15 +43,22 @@ const Header = () => {
         });
     }
 
+    // Sistema de permanencia de login
     onAuthStateChanged(auth, (val) => {
         if (val) {
-            let usuario = val;
+            usuario = val;
             alert("Bem-vindo de volta " + usuario.email);
             document.querySelector(".container-login").style.display = "block";
             document.querySelector(".login").style.display = "none";
         }
+
+        onSnapshot( docCol, where("userId","==", usuario.uid),(doc) => {
+            console.log("Current data: ", doc.docs);
+        });
+
     })
 
+    // Sistema de cadastro das tarefas no db
     const cadastroTarefa = async (e) => {
         e.preventDefault();
 
@@ -62,9 +73,10 @@ const Header = () => {
         }else{
 
             try {
-                const docRef = await addDoc(collection(db, "tarefa"), {
+                const docRef = await addDoc(docCol, {
                     tarefa: tarefa,
-                    horario: dateTime
+                    horario: dateTime,
+                    userId: usuario.uid
                 });
             } catch (e) {
                 console.error("Error adding document: ", e);
@@ -76,6 +88,7 @@ const Header = () => {
         }
 
     }
+
 
     return (
         <div className="header">
@@ -91,12 +104,15 @@ const Header = () => {
             <div className="container-login">
                 <h2>Olá, você está logado <button onClick={(e) => sair(e)}>sair</button></h2>
 
-
                 <form className="form-cadatro-tarefa" onSubmit={(e) => cadastroTarefa(e)}>
                     <textarea name="tarefa"></textarea>
                     <input type="datetime-local" name="datetime" />
                     <button type="submit" name="cadastrar">Cadastrar</button>
                 </form>
+
+                <div className="tarefas-usuario">
+                    <h3>Listagem de tarefas atuais: </h3>
+                </div>
 
             </div>
 
