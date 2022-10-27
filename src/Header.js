@@ -1,11 +1,8 @@
 import { auth, db } from "./Firebase";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth"
-import { collection, addDoc, doc, onSnapshot, where } from "firebase/firestore";
 
 const Header = () => {
 
     let usuario = "";
-    const docCol = collection(db, "tarefa");
 
     // Sistema de login
     const criarConta = (e) => {
@@ -14,13 +11,13 @@ const Header = () => {
         let email = document.querySelector("[name=email]").value;
         let password = document.querySelector("[name=password]").value;
 
-        signInWithEmailAndPassword(auth, email, password)
+        auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // Signed in
-                const user = userCredential.user;
+                usuario = userCredential.user;
                 document.querySelector(".container-login").style.display = "block";
                 document.querySelector(".login").style.display = "none";
-                alert("logado com sucesso!" + user.email);
+                alert("logado com sucesso!" + usuario.email);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -34,7 +31,7 @@ const Header = () => {
     const sair = (e) => {
         e.preventDefault()
 
-        signOut(auth).then(() => {
+        auth().signOut.then(() => {
             alert("Deslogado");
             document.querySelector(".container-login").style.display = "none";
             document.querySelector(".login").style.display = "block";
@@ -44,22 +41,28 @@ const Header = () => {
     }
 
     // Sistema de permanencia de login
-    onAuthStateChanged(auth, (val) => {
+    auth.onAuthStateChanged((val) => {
         if (val) {
             usuario = val;
             alert("Bem-vindo de volta " + usuario.email);
             document.querySelector(".container-login").style.display = "block";
             document.querySelector(".login").style.display = "none";
+
+
+            db.collection("tarefa").where("userId", "==", usuario.uid).orderBy("horario", "desc").onSnapshot((data) => {
+
+                let list = document.querySelector(".tarefas");
+                list.innerHTML = "";
+
+                data.docs.map((val) => {
+                    list.innerHTML+=`<li>${val.data().tarefa}</li>`
+                })
+            });
         }
-
-        onSnapshot( docCol, where("userId","==", usuario.uid),(doc) => {
-            console.log("Current data: ", doc.docs);
-        });
-
     })
 
     // Sistema de cadastro das tarefas no db
-    const cadastroTarefa = async (e) => {
+    const cadastroTarefa = (e) => {
         e.preventDefault();
 
         let tarefa = document.querySelector("[name=tarefa]").value;
@@ -73,7 +76,7 @@ const Header = () => {
         }else{
 
             try {
-                const docRef = await addDoc(docCol, {
+                db.collection("tarefa").add({
                     tarefa: tarefa,
                     horario: dateTime,
                     userId: usuario.uid
@@ -112,6 +115,7 @@ const Header = () => {
 
                 <div className="tarefas-usuario">
                     <h3>Listagem de tarefas atuais: </h3>
+                    <ul className="tarefas"></ul>
                 </div>
 
             </div>

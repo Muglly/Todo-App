@@ -1,9 +1,8 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
-
-const firebaseApp = initializeApp({
+const firebaseApp = firebase.initializeApp({
   apiKey: "AIzaSyAKjOar1_ny1d-s4MOM_CJYbST5fUlsKjY",
   authDomain: "todolist-833e5.firebaseapp.com",
   projectId: "todolist-833e5",
@@ -12,7 +11,7 @@ const firebaseApp = initializeApp({
   appId: "1:716250277692:web:5209e41fd938c8d850e039"
 });
 
-const db = getFirestore(firebaseApp);
-const auth = getAuth(firebaseApp);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
 export { db, auth };
