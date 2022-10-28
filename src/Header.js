@@ -49,18 +49,49 @@ const Header = () => {
             document.querySelector(".login").style.display = "none";
 
 
-            db.collection("tarefa").where("userId", "==", usuario.uid).orderBy("horario", "desc").onSnapshot((data) => {
+            db.collection("tarefa").where("userId", "==", usuario.uid).onSnapshot((data) => {
 
                 let list = document.querySelector(".tarefas");
                 list.innerHTML = "";
-
-                data.docs.map((val) => {
-                    list.innerHTML+=`<li>${val.data().tarefa}</li>`
+                let tarefas = data.docs;
+                tarefas = tarefas.sort((a, b) => {
+                    if (a.data().horario < b.data().horario) {
+                        return -1;
+                    } else {
+                        return +1;
+                    }
                 })
+
+                tarefas.map((val) => {
+                    list.innerHTML += `<li>${val.data().tarefa} <a tarefa-id="${val.id}" class="excluir-btn" href="javascript:void(0)">(X)</a></li>`
+                })
+
+                // Sistema de excluir tarefas
+                let excluirTarefas = document.querySelectorAll(".excluir-btn");
+
+                excluirTarefas.forEach(element => {
+
+                    element.addEventListener('click',function(e){
+    
+                        e.preventDefault();
+    
+                        let docId = element.getAttribute('tarefa-id');
+    
+    
+    
+                        db.collection('tarefa').doc(docId).delete();
+    
+                        
+    
+                    })
+    
+                });
+    
             });
         }
     })
 
+   
     // Sistema de cadastro das tarefas no db
     const cadastroTarefa = (e) => {
         e.preventDefault();
@@ -69,11 +100,11 @@ const Header = () => {
         let dateTime = document.querySelector("[name=datetime]").value;
 
         let dataAtual = new Date().getTime();
-        if(dataAtual > new Date(dateTime).getTime()){
+        if (dataAtual > new Date(dateTime).getTime()) {
             alert("Informe uma data valida!")
-        }else if(tarefa == "" || dateTime == ""){
+        } else if (tarefa == "" || dateTime == "") {
             alert("Preencha os campos por favor")
-        }else{
+        } else {
 
             try {
                 db.collection("tarefa").add({
@@ -84,8 +115,8 @@ const Header = () => {
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
-    
-            let limpar = document.querySelector(".form-cadatro-tarefa").reset(); 
+
+            let limpar = document.querySelector(".form-cadatro-tarefa").reset();
             alert("Cadastrado com sucesso!")
 
         }
