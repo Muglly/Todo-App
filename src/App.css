@@ -1,3 +1,128 @@
-.container-login {
+*{
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: #b3e8e8;
+}
+
+.container {
   display: none;
+}
+
+.container-login, .login {
+  max-width: 750px;
+  height: 260px;
+  margin: 0 auto;
+  background-color: rgb(240, 240, 240);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.container-login h2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.container-login h2 > button {
+  border: none;
+  width: 70px;
+  height: 30px;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #8ab4f8;
+  color: white;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+.container-login > h2 > button:hover {
+  background-color: #263857;
+}
+
+.container-login > form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+.container-login > form > textarea {
+  resize: none;
+  height: 60px;
+  padding: 10px;
+  border: 0;
+  border-radius: 5px;
+}
+
+.container-login > form > input {
+  height: 35px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.container-login > form > button {
+  height: 35px;
+  border: 0;
+  background-color: #8ab4f8;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.75);
+}
+
+.container-login > form > button:hover {
+  background-color: #263857;
+}
+
+.tarefas-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.tarefas {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.tarefas > li {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 500px;
+  background-color: #8ab4f8;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  line-height: 25px;
+  text-align: justify;
+  color: white;
+}
+
+.tarefas > li > a {
+  text-decoration: none;
+  margin-left: 10px;
+  height: 25px;
+  padding: 0 2px;
+  border-radius: 5px;
+  background-color: red;
+  color: white;
 }

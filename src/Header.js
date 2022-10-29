@@ -1,3 +1,4 @@
+import firebase from "firebase/compat/app";
 import { auth, db } from "./Firebase";
 
 const Header = () => {
@@ -11,13 +12,12 @@ const Header = () => {
         let email = document.querySelector("[name=email]").value;
         let password = document.querySelector("[name=password]").value;
 
-        auth().signInWithEmailAndPassword(email, password)
+        firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // Signed in
                 usuario = userCredential.user;
-                document.querySelector(".container-login").style.display = "block";
+                document.querySelector(".container").style.display = "block";
                 document.querySelector(".login").style.display = "none";
-                alert("logado com sucesso!" + usuario.email);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -31,12 +31,12 @@ const Header = () => {
     const sair = (e) => {
         e.preventDefault()
 
-        auth().signOut.then(() => {
-            alert("Deslogado");
-            document.querySelector(".container-login").style.display = "none";
+        firebase.auth().signOut().then(() => {
+            document.querySelector(".container").style.display = "none";
             document.querySelector(".login").style.display = "block";
         }).catch((error) => {
-            // An error happened.
+            const errorMessage = error.message;
+            console.log(errorMessage);
         });
     }
 
@@ -44,8 +44,7 @@ const Header = () => {
     auth.onAuthStateChanged((val) => {
         if (val) {
             usuario = val;
-            alert("Bem-vindo de volta " + usuario.email);
-            document.querySelector(".container-login").style.display = "block";
+            document.querySelector(".container").style.display = "block";
             document.querySelector(".login").style.display = "none";
 
 
@@ -135,21 +134,22 @@ const Header = () => {
                 </form>
             </div>
 
-            <div className="container-login">
-                <h2>Olá, você está logado <button onClick={(e) => sair(e)}>sair</button></h2>
+            <div className="container">
+                <div className="container-login">
+                    <h2>Olá, você está logado <button onClick={(e) => sair(e)}>sair</button></h2>
 
-                <form className="form-cadatro-tarefa" onSubmit={(e) => cadastroTarefa(e)}>
-                    <textarea name="tarefa"></textarea>
-                    <input type="datetime-local" name="datetime" />
-                    <button type="submit" name="cadastrar">Cadastrar</button>
-                </form>
+                    <form className="form-cadatro-tarefa" onSubmit={(e) => cadastroTarefa(e)}>
+                        <textarea name="tarefa" placeholder="Tarefa"></textarea>
+                        <input type="datetime-local" name="datetime" />
+                        <button type="submit" name="cadastrar">Cadastrar</button>
+                    </form>
+                </div>
 
                 <div className="tarefas-usuario">
                     <h3>Listagem de tarefas atuais: </h3>
                     <ul className="tarefas"></ul>
                 </div>
-
-            </div>
+            </div>  
 
         </div>
     )
