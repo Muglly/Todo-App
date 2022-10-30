@@ -76,11 +76,7 @@ const Header = () => {
     
                         let docId = element.getAttribute('tarefa-id');
     
-    
-    
                         db.collection('tarefa').doc(docId).delete();
-    
-                        
     
                     })
     
